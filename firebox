@@ -81,29 +81,26 @@ do
 
 	start)
 	    # if firefox container stopped -> start existing
-    	    if [ "$(docker ps -f "name=firefox" | grep firefox)" ]; then
+    	    if [ ! "$(docker ps -f "name=firefox" | grep firefox)" ]; then
+		firebox_execute
     
 	    # if container does not exist -> create new one
-    	    elif [ "$(docker ps -af "name=firefox" | grep firefox)" ]; then
+    	    elif [ ! "$(docker ps -af "name=firefox" | grep firefox)" ]; then
 		echo "Firebox : Creating new box..."
 		init
 		echo "Firebox : Done."
-	
 	    fi
-
-	    firebox_execute
-	
 	;;
 
 	shell)
 	    # if no running container found -> run firefox
-	    if [ "$(docker ps -f "name=firefox" | grep firefox)" ]; then
+	    if [ ! "$(docker ps -f "name=firefox" | grep firefox)" ]; then
 		echo "Firebox : firefox must be running."
 		# echo "Firebox : execute firebox? [y/n]"
 		firebox_execute
 
             # if no container found -> new container
-	    elif [ "$(docker ps -af "name=firefox" | grep firefox)" ]; then
+	    elif [ ! "$(docker ps -af "name=firefox" | grep firefox)" ]; then
 		echo "Firebox : No box found."
 		echo "Firebox : Creating new box..."
 		init
