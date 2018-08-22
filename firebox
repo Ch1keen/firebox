@@ -1,0 +1,125 @@
+#! /bin/bash
+
+help_page() {
+    echo
+    echo "Usage : $0 [option]"
+    echo
+    echo "    -t, --temporary  : Execute disposable browser"
+    echo "    -h, --help       : Show this help page"
+    echo
+    echo "    start            : start firebox"
+    echo "    shell            : Execute shell in container"
+    echo
+
+    exit 1
+}
+
+# temp_fox function
+#
+#   : will create new container. which name is random.
+
+temp_fox() {
+    docker run --rm \
+        -v /run/user/1000:/run/user/1000 \
+        -v /dev:/dev \
+        -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
+        -v /var/run/dbus:/var/run/dbus \
+        --privileged --ipc=host --shm-size=256m --net=host \
+        -e DISPLAY=$DISPLAY \
+        -e XDG_RUNTIME_DIR=/run/user/1000 \
+        ch1keen/firebox firefox &
+}
+
+#  init function
+#
+#    : will create new 'firefox' container.
+
+init() {
+    if [ "$(docker ps -af "name=firefox" | grep firefox)" ]; then
+	echo "Firebox : Already container exist."
+    fi
+
+    docker run \
+        -v /run/user/1000:/run/user/1000 \
+        -v /dev:/dev \
+        -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
+        -v /var/run/dbus:/var/run/dbus \
+        --privileged --ipc=host --shm-size=256m --net=host \
+        -e DISPLAY=$DISPLAY \
+        -e XDG_RUNTIME_DIR=/run/user/1000 \
+        --name firefox \
+        ch1keen/firebox firefox &
+}
+
+firebox_execute() {
+    docker start firefox
+}
+
+firebox_shell_execute() {
+    docker exec -it firefox /bin/bash
+}
+
+
+if [ $# == 0 ]; then
+    help_page
+    exit 1
+fi
+
+# How to parse option in shell script :
+# https://likegeeks.com/linux-bash-scripting-awesome-guide-part3/
+
+while [ -n "$1" ]
+do
+    case "$1" in
+	-t|--temporary)
+	    temp_fox
+	;;
+
+	-h|--help)
+	    help_page
+	;;
+
+	start)
+	    # if firefox container stopped -> start existing
+    	    if [ "$(docker ps -f "name=firefox" | grep firefox)" ]; then
+    
+	    # if container does not exist -> create new one
+    	    elif [ "$(docker ps -af "name=firefox" | grep firefox)" ]; then
+		echo "Firebox : Creating new box..."
+		init
+		echo "Firebox : Done."
+	
+	    fi
+
+	    firebox_execute
+	
+	;;
+
+	shell)
+	    # if no running container found -> run firefox
+	    if [ "$(docker ps -f "name=firefox" | grep firefox)" ]; then
+		echo "Firebox : firefox must be running."
+		# echo "Firebox : execute firebox? [y/n]"
+		firebox_execute
+
+            # if no container found -> new container
+	    elif [ "$(docker ps -af "name=firefox" | grep firefox)" ]; then
+		echo "Firebox : No box found."
+		echo "Firebox : Creating new box..."
+		init
+		echo "Firebox : Done."
+	
+	    else
+		echo "Shell Executing : Error occured."
+	    fi
+
+	    firebox_shell_execute
+	;;
+
+	*)
+	    echo "Option $1 not recognized."
+	    help_page
+	;;
+    esac
+    shift
+done
