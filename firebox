@@ -89,6 +89,8 @@ do
 		echo "Firebox : Creating new box..."
 		init
 		echo "Firebox : Done."
+	    else
+		echo "Already Running."
 	    fi
 	;;
 
@@ -107,7 +109,8 @@ do
 		echo "Firebox : Done."
 	
 	    else
-		echo "Shell Executing : Error occured."
+		echo "Firebox : Starting..."
+	
 	    fi
 
 	    firebox_shell_execute
