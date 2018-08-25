@@ -53,6 +53,8 @@ init() {
 
 firebox_execute() {
     docker start firefox
+    # Issue : no audio output after reboot
+    docker exec -it firefox pulseaudio
 }
 
 firebox_shell_execute() {
@@ -109,7 +111,7 @@ do
 		echo "Firebox : Done."
 	
 	    else
-		echo "Firebox : Starting..."
+		echo "Firebox : Entering into shell..."
 	
 	    fi
 
