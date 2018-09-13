@@ -18,16 +18,16 @@ install() {
     # Check for docker installed
     if [ ! -x "/usr/bin/docker" ]; then
         echo "Docker not found. Is docker installed?"
-	exit 1
+    exit 1
     fi
 
     if [ -f ./firebox ]; then
         sudo cp ./firebox /bin/ \
-	&& echo "Succesfully Installed." \
-	|| echo "You're not permitted. Try 'sudo $0 install'." \
+    && echo "Succesfully Installed." \
+    || echo "You're not permitted. Try 'sudo $0 install'." \
 
     else
-	echo "firebox does not exist."
+    echo "firebox does not exist."
     fi
 }
 
@@ -36,7 +36,7 @@ uninstall() {
         sudo rm /bin/firebox
 
     else
-	echo "File is missing"
+    echo "File is missing"
 
     fi
 }
