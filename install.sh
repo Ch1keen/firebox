@@ -22,18 +22,19 @@ install() {
     fi
 
     if [ -f ./firebox ]; then
-        sudo cp ./firebox /bin/ \
+        sudo cp ./firebox /usr/bin/ \
     && echo "Succesfully Installed." \
-    || echo "You're not permitted. Try 'sudo $0 install'." \
+    || echo "You're not permitted. Try 'sudo $0 install'."
 
     else
-    echo "firebox does not exist."
+        echo "firebox does not exist."
     fi
 }
 
 uninstall() {
-    if [ -f /bin/firebox ]; then
-        sudo rm /bin/firebox
+    # remove /usr/bin/firebox
+    if [ -f /usr/bin/firebox ]; then
+        sudo rm /usr/bin/firebox
 
     else
     echo "File is missing"
