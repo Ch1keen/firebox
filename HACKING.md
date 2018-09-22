@@ -96,22 +96,22 @@ tab completion을 넣을 수 있을지 생각해보는 것도 좋은 것 같습�
 
 한글 관련 글꼴을 설치해줍니다. 구글에서 제공하는 [google-noto](https://www.google.com/get/noto/help/cjk/) 폰트를 사용합니다. noto라는 이름을 붙인 이유가 'no tofu'이기도 하고, 실제로 제가 사용하는 데에도 큰 불편함은 없어서 이 폰트를 사용할 겁니다.
 
-> RUN           apt -y install fcitx fcitx-hangul
-> ENV           GTK_IM_MODULE=fcitx
-> ENV           QT_IM_MODULE=fcitx
+> RUN           apt -y install fcitx fcitx-hangul  
+> ENV           GTK_IM_MODULE=fcitx  
+> ENV           QT_IM_MODULE=fcitx  
 > ENV           XMODIFIERS=@im=fcitx
 
 컨테이너 내에서도 한글을 사용할 수 있도록 fcitx를 설치합니다.
 
-> RUN           apt -y install firefox
-> RUN           apt -y install pulseaudio
+> RUN           apt -y install firefox  
+> RUN           apt -y install pulseaudio  
 > RUN           apt -y install ubuntu-restricted-extras
 
 파이어폭스를 설치하고, 소리가 나올 수 있도록 pulseaudio를 설치해줍니다. 또 파이어폭스가 좀 더 다양한 영상 포맷을 재생할 수 있도록 H.264와 관련된 플러그인을 설치해줍니다.
 
-> RUN           apt -y install sudo
-> RUN           useradd firefox -m -G audio
-> RUN           echo "firefox ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+> RUN           apt -y install sudo  
+> RUN           useradd firefox -m -G audio  
+> RUN           echo "firefox ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers  
 > USER          firefox
 
 sudo를 설치해주고, firefox라는 계정을 하나 만듭니다. 이 계정은 sudo 명령어를 비밀번호 없이 사용할 수 있도록 합니다.
