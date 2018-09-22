@@ -4,7 +4,7 @@ help_page() {
     echo
     echo "Usage : firebox [option]"
     echo
-    echo "    -t, --temporary  : Execute disposable browser"
+    echo "    temp             : Execute disposable browser"
     echo "    -h, --help       : Show this help page"
     echo
     echo "    start            : start firebox"
@@ -27,7 +27,7 @@ temp_fox() {
         --privileged --ipc=host --shm-size=256m --net=host \
         -e DISPLAY=$DISPLAY \
         -e XDG_RUNTIME_DIR=/run/user/1000 \
-        ch1keen/firebox firefox &
+        ch1keen/firebox-firefox firefox &
 }
 
 #  init function
@@ -48,7 +48,9 @@ init() {
         -e DISPLAY=$DISPLAY \
         -e XDG_RUNTIME_DIR=/run/user/1000 \
         --name firefox \
-        ch1keen/firebox firefox &
+        ch1keen/firebox-firefox firefox &
+    
+    docker exec -it firefox pulseaudio
 }
 
 firebox_execute() {
@@ -73,7 +75,7 @@ fi
 while [ -n "$1" ]
 do
     case "$1" in
-    -t|--temporary)
+    temp)
         temp_fox
     ;;
 
@@ -82,25 +84,25 @@ do
     ;;
 
     start)
-        # if firefox container stopped -> start existing
-        if [ ! "$(docker ps -f "name=firefox" | grep firefox)" ]; then
+        if [ "$(docker ps -f "name=firefox" | grep firefox)" ]; then
+            echo "Already Running."
+            
+        elif [ "$(docker ps -af "name=firefox" | grep firefox)" ]; then
             firebox_execute
 
-        # if container does not exist -> create new one
-        elif [ ! "$(docker ps -af "name=firefox" | grep firefox)" ]; then
+        else
             echo "Firebox : Creating new box..."
             init
             echo "Firebox : Done."
-        else
-            echo "Already Running."
         fi
+
+
     ;;
 
     shell)
         # if no running container found -> run firefox
         if [ ! "$(docker ps -f "name=firefox" | grep firefox)" ]; then
             echo "Firebox : firefox must be running."
-            # echo "Firebox : execute firebox? [y/n]"
             firebox_execute
 
         # if no container found -> new container
